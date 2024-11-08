@@ -258,3 +258,4 @@ extension MusicKit.MusicPlayer.State: Equatable {
             lhs.audioVariant == rhs.audioVariant
     }
 }
+

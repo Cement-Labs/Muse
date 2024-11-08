@@ -13,6 +13,52 @@ extension Playbar {
         @EnvironmentObject private var musicPlayer: MusicPlayer
         @EnvironmentObject private var router: Router
         
+        @Binding var showPlayView: Bool
+        
+        var animationNamespace: Namespace.ID
+        
+        var body: some View {
+            Group {
+                if let currentSong = self.musicPlayer.currentSong {
+                    self.content(currentSong)
+                } else {
+                    self.emptyContent
+                }
+            }
+        }
+        
+        // MARK: - Components
+        
+        private var emptyContent: some View {
+            VStack(alignment: .leading, spacing: 0.0) {
+                Text("No song to play")
+                    .font(.system(size: 12.0, weight: .semibold))
+                    .foregroundStyle(Color.primaryText)
+            }
+        }
+        
+        private func content(_ song: Song) -> some View {
+            VStack(alignment: .leading, spacing: 0.0) {
+                Text(song.title)
+                    .font(.system(size: 12.0, weight: .semibold))
+                    .foregroundStyle(Color.primaryText)
+                
+                Text(song.artistName)
+                    .font(.system(size: 10.0, weight: .medium))
+                    .foregroundStyle(Color.secondaryText)
+            }
+            .matchedGeometryEffect(id: "SongInfo", in: animationNamespace)
+        }
+    }
+    
+    struct FullSongPreview: View {
+        @EnvironmentObject private var musicPlayer: MusicPlayer
+        @EnvironmentObject private var router: Router
+        
+        @Binding var showPlayView: Bool
+        
+        var animationNamespace: Namespace.ID
+        
         var body: some View {
             Group {
                 if let currentSong = self.musicPlayer.currentSong {
@@ -27,12 +73,7 @@ extension Playbar {
         // MARK: - Components
         
         private var emptyContent: some View {
-            HStack(spacing: 12.0) {
-                Color.secondaryFill
-                    .frame(width: 36.0, height: 36.0)
-                    .clipShape(.rect(cornerRadius: 8.0))
-                    .border(style: .quinaryFill, cornerRadius: 8.0)
-                
+            VStack(alignment: .leading, spacing: 0.0) {
                 Text("No song to play")
                     .font(.system(size: 12.0, weight: .semibold))
                     .foregroundStyle(Color.primaryText)
@@ -40,24 +81,18 @@ extension Playbar {
         }
         
         private func content(_ song: Song) -> some View {
-            HStack(spacing: 12.0) {
-                MusicArtworkImage(artwork: song.artwork, width: 36.0, height: 36.0)
-                    .clipShape(.rect(cornerRadius: 8.0))
-                    .border(style: .quinaryFill, cornerRadius: 8.0)
+            
+            VStack(alignment: .leading, spacing: .zero) {
+                Text(song.title)
+                    .font(.system(size: 20.0, weight: .semibold))
+                    .foregroundStyle(Color.primaryText)
                 
-                VStack(alignment: .leading, spacing: 0.0) {
-                    Text(song.title)
-                        .font(.system(size: 12.0, weight: .semibold))
-                        .foregroundStyle(Color.primaryText)
-                    
-                    Text(song.artistName)
-                        .font(.system(size: 10.0, weight: .medium))
-                        .foregroundStyle(Color.secondaryText)
-                }
+                Text(song.artistName)
+                    .font(.system(size: 12.0, weight: .medium))
+                    .foregroundStyle(Color.secondaryText)
             }
-            .tappable(hoverStyle: .init(padding: .init(vertical: 8.0, horizontal: 12.0), cornerRadius: 8.0)) {
-                self.router.push(song)
-            }
+            .frame(width: 300, alignment: .leading)
+            .matchedGeometryEffect(id: "SongInfo", in: animationNamespace)
         }
     }
 }

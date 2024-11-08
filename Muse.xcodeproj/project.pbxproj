@@ -654,8 +654,8 @@
 		0858D3962BD6D80D0082C64F /* Playbar */ = {
 			isa = PBXGroup;
 			children = (
-				0858D3972BD6D80D0082C64F /* PlaybarSongControls.swift */,
 				0858D3982BD6D80D0082C64F /* Playbar.swift */,
+				0858D3972BD6D80D0082C64F /* PlaybarSongControls.swift */,
 				0858D3992BD6D80D0082C64F /* PlaybarSongPreview.swift */,
 				0858D39A2BD6D80D0082C64F /* PlaybarVolumeControls.swift */,
 			);

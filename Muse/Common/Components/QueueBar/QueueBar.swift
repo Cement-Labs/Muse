@@ -9,68 +9,38 @@ import SwiftUI
 import MusicKit
 
 struct QueueBar: View {
-    @Binding private var isPresented: Bool
     
     @EnvironmentObject private var musicPlayer: MusicPlayer
     
-    init(isPresented: Binding<Bool>) {
-        self._isPresented = isPresented
-    }
-    
     var body: some View {
         ZStack {
-            if self.isPresented {
-                VStack(spacing: 0.0) {
-                    self.header
-                    
-                    Divider()
-                    
-                    Group {
-                        if self.musicPlayer.queue.isEmpty {
-                            Text("There are no songs in the queue")
-                                .font(.system(size: 12.0, weight: .medium))
-                                .foregroundStyle(Color.secondaryText)
-                                .frame(maxWidth: .infinity, maxHeight: .infinity)
-                        } else {
-                            self.songList
-                        }
+            VStack(spacing: 0.0) {
+                
+                Group {
+                    if self.musicPlayer.queue.isEmpty {
+                        Text("There are no songs in the queue")
+                            .font(.system(size: 12.0, weight: .medium))
+                            .foregroundStyle(Color.secondaryText)
+                            .frame(maxWidth: .infinity, maxHeight: .infinity)
+                    } else {
+                        self.songList
                     }
                 }
-                .frame(width: 256.0)
-                .frame(maxHeight: .infinity, alignment: .top)
-                .background(.ultraThinMaterial)
-                .clipShape(.rect(cornerRadius: 12.0))
-                .border(style: .quinaryFill, cornerRadius: 12.0)
-                .transition(.move(edge: .trailing).combined(with: .opacity))
             }
+            .frame(width: 256.0, height: 450.0)
+            .frame(maxHeight: .infinity, alignment: .top)
+            .background(.ultraThinMaterial)
+            .clipShape(.rect(cornerRadius: 12.0))
+            .border(style: .quinaryFill, cornerRadius: 12.0)
         }
-        .animation(.easeIn(duration: 0.4), value: self.isPresented)
     }
     
     // MARK: - Components
     
-    private var header: some View {
-        HStack {
-            Text("Queue")
-                .font(.system(size: 12.0, weight: .bold))
-                .foregroundStyle(Color.secondaryText)
-            
-            Spacer()
-            
-            Image(systemName: "xmark.circle.fill")
-                .font(.system(size: 14.0))
-                .foregroundStyle(.white)
-                .tappable(hoverStyle: .init(padding: .init(vertical: 4.0, horizontal: 4.0))) {
-                    self.isPresented = false
-                }
-        }
-        .padding(.all, 16.0)
-    }
-    
     private var songList: some View {
         ScrollViewReader { proxy in
             ScrollView {
-                VStack(spacing: 8.0) {
+                LazyVStack(spacing: 8.0) {
                     ForEach(self.musicPlayer.queue) { song in
                         Item(song: song)
                             .id(song.id)
