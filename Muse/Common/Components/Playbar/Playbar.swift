@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import simd
 
 struct Playbar: View {
     static let height: CGFloat = 70.0
@@ -16,6 +17,8 @@ struct Playbar: View {
     @Binding var showPlayView: Bool
     @State var isQueueBarPresented: Bool = false
     @State var isAirPlayBarPresented: Bool = false
+    @State var ishowLy: Bool = false
+    @State var dominantColors: [Color] = [.white, .white, .white]
 
     @Namespace private var animation
     
@@ -23,13 +26,22 @@ struct Playbar: View {
     
     var body: some View {
         ZStack {
+            if showPlayView {
+                backMeshGradient(dominantColors: dominantColors)
+                AdjustableBlurView(blurRadius: ishowLy ? 0 : 20)
+            }
             HStack(alignment: .center, spacing: 10) {
                 VStack(spacing: 20.0) {
                     Group {
                         if let currentSong = self.musicPlayer.currentSong {
-                            MusicArtworkImage(artwork: currentSong.artwork, width: showPlayView ? (self.musicPlayer.playbackState == .playing ? 300 : 250) : 36.0, height: showPlayView ? (self.musicPlayer.playbackState == .playing ? 300 : 250) : 36.0)
-                                .border(style: .quinaryFill, cornerRadius: 8.0)
-                                .clipShape(RoundedRectangle(cornerRadius: showPlayView ? 12.5 : 8.0))
+                            MusicArtworkImage(
+                                artwork: currentSong.artwork,
+                                width: showPlayView ? (self.musicPlayer.playbackState == .playing ? 300 : 250) : 36.0,
+                                height: showPlayView ? (self.musicPlayer.playbackState == .playing ? 300 : 250) : 36.0,
+                                dominantColors: Binding($dominantColors)
+                            )
+                            .border(style: .quinaryFill, cornerRadius: 8.0)
+                            .clipShape(RoundedRectangle(cornerRadius: showPlayView ? 12.5 : 8.0))
                         } else {
                             RoundedRectangle(cornerRadius: 12.5)
                                 .frame(width: showPlayView ? 300 : 36.0, height: showPlayView ? 300 : 36.0)
@@ -77,6 +89,19 @@ struct Playbar: View {
                     .matchedGeometryEffect(id: "SongControls", in: animation)
             }
             
+            if showPlayView {
+                Group {
+                    Image(systemName: "music.note.list")
+                        .font(.system(size: 18.0))
+                        .foregroundStyle(showPlayView ? Color.white : Color.secondaryText)
+                        .tappable {
+                            ishowLy.toggle()
+                        }
+                }
+                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: showPlayView ? .bottomLeading : .leading)
+                .padding([.bottom, .horizontal], showPlayView ? 16 : 0)
+            }
+            
             HStack(spacing: 18)  {
                 if !showPlayView {
                     VolumeControls()
@@ -85,6 +110,7 @@ struct Playbar: View {
                 
                 Image(systemName: "list.bullet")
                     .font(.system(size: 18.0))
+                    .foregroundStyle(showPlayView ? Color.white : Color.secondaryText)
                     .tappable {
                         self.isQueueBarPresented.toggle()
                     }
@@ -94,6 +120,7 @@ struct Playbar: View {
                 
                 Image(systemName: "airplay.audio")
                     .font(.system(size: 18.0))
+                    .foregroundStyle(showPlayView ? Color.white : Color.secondaryText)
                     .tappable {
                         self.isAirPlayBarPresented.toggle()
                     }
@@ -102,9 +129,9 @@ struct Playbar: View {
                     }
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: showPlayView ? .bottomTrailing : .trailing)
-            .padding(.bottom, showPlayView ? 16 : 0)
+            .padding([.bottom, .horizontal], showPlayView ? 16 : 0)
         }
-        .padding(.horizontal, 16)
+        .padding(.horizontal, showPlayView ? 0 : 16)
         .frame(height: showPlayView ? parentGeometry.size.height : Self.height)
         .frame(maxWidth: .infinity, alignment: .center)
         .background(.ultraThickMaterial)
@@ -124,4 +151,5 @@ struct Playbar_Preview: PreviewProvider {
         .frame(minWidth: 1080.0, minHeight: 600.0)
     }
 }
+
 

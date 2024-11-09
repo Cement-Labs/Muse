@@ -43,7 +43,7 @@ struct PlaylistDetailsView: View {
     
     private func content(playlist: Playlist) -> some View {
         ScrollView {
-            VStack(spacing: 32.0) {
+            LazyVStack(spacing: 32.0) {
                 InfoView(playlist: playlist)
                 TrackList(tracks: playlist.tracks)
             }

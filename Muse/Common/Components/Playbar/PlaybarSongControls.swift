@@ -154,7 +154,7 @@ extension Playbar {
             HStack(spacing: 8.0) {
                 Image(systemName: "shuffle")
                     .font(.system(size: 12.0, weight: .medium))
-                    .foregroundStyle(self.musicPlayer.shuffleMode == .songs ? Color.pinkAccent : Color.secondaryText)
+                    .foregroundStyle(self.musicPlayer.shuffleMode == .songs ? Color.pinkAccent : Color.white)
                     .tappable {
                         self.musicPlayer.shuffleMode.toggle()
                     }
@@ -164,7 +164,7 @@ extension Playbar {
                 Group {
                     Image(systemName: "backward.fill")
                         .font(.system(size: 18.0, weight: .medium))
-                        .foregroundStyle(Color.secondaryText)
+                        .foregroundStyle(Color.white)
                         .tappable {
                             self.musicPlayer.skip(.backward)
                         }
@@ -173,12 +173,12 @@ extension Playbar {
                         if self.musicPlayer.playbackState == .loading {
                             Image(systemName: "ellipsis")
                                 .font(.system(size: 20.0, weight: .medium))
-                                .foregroundStyle(Color.secondaryText)
+                                .foregroundStyle(Color.white)
                                 .symbolEffect(.variableColor.iterative.dimInactiveLayers, options: .repeating)
                         } else {
                             Image(systemName: self.musicPlayer.playbackState == .playing ? "pause.fill" : "play.fill")
                                 .font(.system(size: 20.0, weight: .medium))
-                                .foregroundStyle(Color.secondaryText)
+                                .foregroundStyle(Color.white)
                                 .tappable {
                                     Task {
                                         if self.musicPlayer.playbackState == .playing {
@@ -194,7 +194,7 @@ extension Playbar {
                     
                     Image(systemName: "forward.fill")
                         .font(.system(size: 18.0, weight: .medium))
-                        .foregroundStyle(Color.secondaryText)
+                        .foregroundStyle(Color.white)
                         .tappable {
                             self.musicPlayer.skip(.forward)
                         }
@@ -204,7 +204,7 @@ extension Playbar {
                 
                 Image(systemName: self.musicPlayer.repeatMode == .one ? "repeat.1" : "repeat")
                     .font(.system(size: 12.0, weight: .medium))
-                    .foregroundStyle(self.musicPlayer.repeatMode != .none ? Color.pinkAccent : Color.secondaryText)
+                    .foregroundStyle(self.musicPlayer.repeatMode != .none ? Color.pinkAccent : Color.white)
                     .tappable {
                         self.musicPlayer.repeatMode.next()
                     }
@@ -218,7 +218,7 @@ extension Playbar {
                     if let duration = self.musicPlayer.currentSong?.duration {
                         Text((self.playbackTimePercentage * duration).minutesAndSeconds)
                             .font(.system(size: 10.0))
-                            .foregroundStyle(Color.secondaryText)
+                            .foregroundStyle(Color.white)
                     } else {
                         Color.clear
                     }
@@ -248,7 +248,7 @@ extension Playbar {
                     if let duration = self.musicPlayer.currentSong?.duration {
                         Text(duration.minutesAndSeconds)
                             .font(.system(size: 10.0))
-                            .foregroundStyle(Color.secondaryText)
+                            .foregroundStyle(Color.white)
                     } else {
                         Color.clear
                     }

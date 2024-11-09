@@ -76,7 +76,7 @@ extension Playbar {
             VStack(alignment: .leading, spacing: 0.0) {
                 Text("No song to play")
                     .font(.system(size: 12.0, weight: .semibold))
-                    .foregroundStyle(Color.primaryText)
+                    .foregroundStyle(Color.white)
             }
         }
         
@@ -85,11 +85,11 @@ extension Playbar {
             VStack(alignment: .leading, spacing: .zero) {
                 Text(song.title)
                     .font(.system(size: 20.0, weight: .semibold))
-                    .foregroundStyle(Color.primaryText)
+                    .foregroundStyle(Color.white)
                 
                 Text(song.artistName)
                     .font(.system(size: 12.0, weight: .medium))
-                    .foregroundStyle(Color.secondaryText)
+                    .foregroundStyle(Color.white)
             }
             .frame(width: 300, alignment: .leading)
             .matchedGeometryEffect(id: "SongInfo", in: animationNamespace)

@@ -6,59 +6,91 @@
 //
 
 import SwiftUI
-import SDWebImageSwiftUI
 import MusicKit
+import DominantColors
 
 struct MusicArtworkImage: View {
+    
     private let artwork: Artwork?
     private let width: CGFloat
     private let height: CGFloat
     
-    @State private var isFailed: Bool = false
+    @State private var nsImage: NSImage? = nil
+    @State private var isLoading = false
+    @Binding var dominantColors: [Color]?
     
-    init(artwork: Artwork?, width: CGFloat, height: CGFloat) {
+    init(artwork: Artwork?, width: CGFloat, height: CGFloat, dominantColors: Binding<[Color]?> = .constant(nil)) {
         self.artwork = artwork
         self.width = width
         self.height = height
+        self._dominantColors = dominantColors
     }
     
     var body: some View {
-        if let artwork = self.artwork {
-            self.artworkImage(artwork)
+        if let artwork = self.artwork, let url = artwork.url(width: 128, height: 128) {
+            if let nsImage = nsImage {
+                Image(nsImage: nsImage)
+                    .resizable()
+                    .frame(width: self.width, height: self.height)
+                    .onAppear {
+                        extractDominantColors(from: nsImage)
+                    }
+                    .onChange(of: url) { oldValue, newValue in
+                        self.nsImage = nil
+                    }
+            } else {
+                placeholder
+                    .onAppear {
+                        if !isLoading {
+                            isLoading = true
+                            loadArtworkImage(from: url)
+                        }
+                    }
+            }
         } else {
-            self.placeholder
+            placeholder
         }
     }
-    
-    // MARK: - Components
     
     private var placeholder: some View {
         ZStack {
-            Color.secondaryFill
-            
+            Color.secondary.opacity(0.2)
             Image(systemName: "music.note")
                 .resizable()
                 .scaledToFit()
-                .foregroundStyle(Color.primaryText)
-                .padding(.all, 12.0)
-                .frame(maxWidth: 64.0, maxHeight: 64.0)
+                .padding(12)
+                .frame(maxWidth: 64, maxHeight: 64)
         }
+        .frame(width: self.width, height: self.height)
     }
     
-    @ViewBuilder
-    private func artworkImage(_ artwork: Artwork) -> some View {
-        if self.isFailed {
-            ArtworkImage(artwork, width: self.width, height: self.height)
-        } else {
-            WebImage(url: artwork.url(width: Int(self.width), height: Int(self.height)))
-                .resizable()
-                .placeholder {
-                    self.placeholder
+    private func loadArtworkImage(from url: URL) {
+        URLSession.shared.dataTask(with: url) { data, response, error in
+            if let data = data, let image = NSImage(data: data) {
+                DispatchQueue.main.async {
+                    self.nsImage = image
                 }
-                .onFailure { _ in
-                    self.isFailed = true
-                }
-                .frame(width: self.width, height: self.height)
+            }
+            DispatchQueue.main.async {
+                self.isLoading = false
+            }
+        }.resume()
+    }
+    
+    func extractDominantColors(from image: NSImage) {
+        do {
+            let colors = try DominantColors.dominantColors(nsImage: image, quality: .low, maxCount: 3, options: [.excludeBlack], sorting: .frequency)
+            
+            let processedColors = colors.map { nsColor in
+                Color(red: Double(nsColor.redComponent),
+                      green: Double(nsColor.greenComponent),
+                      blue: Double(nsColor.blueComponent))
+            }
+            DispatchQueue.main.async {
+                self.dominantColors = processedColors
+            }
+        } catch {
+            print("Failed to extract colors: \(error)")
         }
     }
 }
