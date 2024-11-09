@@ -51,6 +51,7 @@ final class MusicPlayer: ObservableObject {
     
     @Published var queue: [Song] = []
     @Published var playbackTime: TimeInterval = 0.0
+    @Published var deviceIDMapping: [String: AudioDeviceID] = [:]
     
     @Published var currentSong: Song? = nil {
         didSet {
@@ -170,6 +171,112 @@ final class MusicPlayer: ObservableObject {
         }
     }
     
+    func getDeviceID(for device: String) -> AudioDeviceID? {
+        return deviceIDMapping[device]
+    }
+    
+    func getAudioOutputDevices() -> [String] {
+        var deviceList: [String] = []
+        
+        var propertyAddress = AudioObjectPropertyAddress(
+            mSelector: kAudioHardwarePropertyDevices,
+            mScope: kAudioObjectPropertyScopeGlobal,
+            mElement: kAudioObjectPropertyElementMain
+        )
+        
+        var dataSize: UInt32 = 0
+        var status = AudioObjectGetPropertyDataSize(AudioObjectID(kAudioObjectSystemObject),
+                                                    &propertyAddress,
+                                                    0, nil,
+                                                    &dataSize)
+        
+        if status != noErr {
+            print("Error in getting device list")
+            return deviceList
+        }
+        
+        let deviceCount = Int(dataSize) / MemoryLayout<AudioDeviceID>.size
+        var audioDevices = [AudioDeviceID](repeating: 0, count: deviceCount)
+        
+        status = AudioObjectGetPropertyData(AudioObjectID(kAudioObjectSystemObject),
+                                            &propertyAddress,
+                                            0, nil,
+                                            &dataSize,
+                                            &audioDevices)
+        
+        if status != noErr {
+            print("Error in getting device list")
+            return deviceList
+        }
+        
+        // 用于存储设备名称和 AudioDeviceID 的映射
+        var deviceIDMapping: [String: AudioDeviceID] = [:]
+
+        for device in audioDevices {
+            var isOutputDevice: UInt32 = 0
+            var size = UInt32(MemoryLayout<UInt32>.size)
+            
+            var outputPropertyAddress = AudioObjectPropertyAddress(
+                mSelector: kAudioDevicePropertyStreams,
+                mScope: kAudioDevicePropertyScopeOutput,
+                mElement: kAudioObjectPropertyElementMain
+            )
+            
+            status = AudioObjectGetPropertyData(device,
+                                                &outputPropertyAddress,
+                                                0, nil,
+                                                &size,
+                                                &isOutputDevice)
+            
+            if status == noErr && isOutputDevice > 0 {
+                var deviceName: CFString = "" as CFString
+                var nameSize = UInt32(MemoryLayout<CFString>.size)
+                
+                var namePropertyAddress = AudioObjectPropertyAddress(
+                    mSelector: kAudioObjectPropertyName,
+                    mScope: kAudioDevicePropertyScopeOutput,
+                    mElement: kAudioObjectPropertyElementMain
+                )
+                
+                status = AudioObjectGetPropertyData(device,
+                                                    &namePropertyAddress,
+                                                    0, nil,
+                                                    &nameSize,
+                                                    &deviceName)
+                
+                if status == noErr {
+                    let deviceNameString = deviceName as String
+                    deviceList.append(deviceNameString)
+                    
+                    deviceIDMapping[deviceNameString] = device
+                }
+            }
+        }
+        
+        self.deviceIDMapping = deviceIDMapping
+        
+        return deviceList
+    }
+    
+    func setAudioOutputDevice(deviceID: AudioDeviceID) {
+        var outputDeviceID = deviceID
+        var propertyAddress = AudioObjectPropertyAddress(
+            mSelector: kAudioHardwarePropertyDefaultOutputDevice,
+            mScope: kAudioObjectPropertyScopeGlobal,
+            mElement: kAudioObjectPropertyElementMain
+        )
+        
+        let status = AudioObjectSetPropertyData(AudioObjectID(kAudioObjectSystemObject),
+                                                &propertyAddress,
+                                                0, nil,
+                                                UInt32(MemoryLayout.size(ofValue: outputDeviceID)),
+                                                &outputDeviceID)
+        
+        if status != noErr {
+            print("Error in setting output device")
+        }
+    }
+    
     private func handleForwardSkipping() {
         Task {
             try await self.player.skipToNextEntry()
@@ -248,7 +355,7 @@ final class MusicPlayer: ObservableObject {
     }
 }
 
-extension MusicKit.MusicPlayer.State: Equatable {
+extension MusicKit.MusicPlayer.State: @retroactive Equatable {
     public static func == (lhs: MusicKit.MusicPlayer.State, rhs: MusicKit.MusicPlayer.State) -> Bool {
         return
             lhs.playbackStatus == rhs.playbackStatus &&

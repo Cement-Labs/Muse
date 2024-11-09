@@ -123,6 +123,7 @@
 		0858D46C2BD6D80D0082C64F /* AlbumDetailsTrackList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0858D3F72BD6D80D0082C64F /* AlbumDetailsTrackList.swift */; };
 		0858D46D2BD6D80D0082C64F /* AlbumDetailsInfoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0858D3F82BD6D80D0082C64F /* AlbumDetailsInfoView.swift */; };
 		0858D46E2BD6D80D0082C64F /* AlbumDetailsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0858D3FA2BD6D80D0082C64F /* AlbumDetailsView.swift */; };
+		65AA0E932CDE3AB5001D768F /* AirPlayBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65AA0E922CDE3AB5001D768F /* AirPlayBar.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -244,6 +245,7 @@
 		0858D3F82BD6D80D0082C64F /* AlbumDetailsInfoView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AlbumDetailsInfoView.swift; sourceTree = "<group>"; };
 		0858D3FA2BD6D80D0082C64F /* AlbumDetailsView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AlbumDetailsView.swift; sourceTree = "<group>"; };
 		08B77F412B20F9D2004B6D8D /* Muse.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Muse.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		65AA0E922CDE3AB5001D768F /* AirPlayBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AirPlayBar.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -515,6 +517,7 @@
 				0858D3862BD6D80D0082C64F /* Slider */,
 				0858D3892BD6D80D0082C64F /* Styles */,
 				0858D38F2BD6D80D0082C64F /* Prompts */,
+				65AA0E912CDE3AA7001D768F /* AirPlayBar */,
 				0858D3942BD6D80D0082C64F /* QueueBar */,
 				0858D3962BD6D80D0082C64F /* Playbar */,
 				0858D39B2BD6D80D0082C64F /* SongItem */,
@@ -1078,6 +1081,14 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
+		65AA0E912CDE3AA7001D768F /* AirPlayBar */ = {
+			isa = PBXGroup;
+			children = (
+				65AA0E922CDE3AB5001D768F /* AirPlayBar.swift */,
+			);
+			path = AirPlayBar;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -1238,6 +1249,7 @@
 				0858D46C2BD6D80D0082C64F /* AlbumDetailsTrackList.swift in Sources */,
 				0858D40B2BD6D80D0082C64F /* MusicPlayer.swift in Sources */,
 				0858D4092BD6D80D0082C64F /* MusicAuthorizationManager.swift in Sources */,
+				65AA0E932CDE3AB5001D768F /* AirPlayBar.swift in Sources */,
 				0858D4692BD6D80D0082C64F /* ArtistDetailsSectionProvider.swift in Sources */,
 				0858D4362BD6D80D0082C64F /* MusicSubscriptionPrompt.swift in Sources */,
 				0858D4552BD6D80D0082C64F /* LibraryView.swift in Sources */,

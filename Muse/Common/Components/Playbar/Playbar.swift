@@ -15,6 +15,7 @@ struct Playbar: View {
     
     @Binding var showPlayView: Bool
     @State var isQueueBarPresented: Bool = false
+    @State var isAirPlayBarPresented: Bool = false
 
     @Namespace private var animation
     
@@ -94,7 +95,10 @@ struct Playbar: View {
                 Image(systemName: "airplay.audio")
                     .font(.system(size: 18.0))
                     .tappable {
-                        //
+                        self.isAirPlayBarPresented.toggle()
+                    }
+                    .popover(isPresented: $isAirPlayBarPresented) {
+                        AirPlayBar(isAirPlayBarPresented: $isAirPlayBarPresented)
                     }
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: showPlayView ? .bottomTrailing : .trailing)
