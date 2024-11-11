@@ -24,8 +24,14 @@ extension SearchResultsSectionProvider {
             var body: some View {
                 VStack(alignment: .leading) {
                     HStack(alignment: .top) {
-                        MusicArtworkImage(artwork: self.artwork, width: 100.0, height: 100.0)
-                            .clipShape(.rect(cornerRadius: 8.0))
+                        MusicArtworkImage(
+                            artwork: self.artwork,
+                            width: 100.0,
+                            height: 100.0,
+                            imageWidth: 100,
+                            imageHeight: 100
+                        )
+                        .clipShape(.rect(cornerRadius: 8.0))
                         
                         Spacer()
                         

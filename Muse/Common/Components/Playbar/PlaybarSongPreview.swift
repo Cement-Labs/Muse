@@ -84,10 +84,12 @@ extension Playbar {
             
             VStack(alignment: .leading, spacing: .zero) {
                 Text(song.title)
+                    .lineLimit(1)
                     .font(.system(size: 20.0, weight: .semibold))
                     .foregroundStyle(Color.white)
                 
                 Text(song.artistName)
+                    .lineLimit(1)
                     .font(.system(size: 12.0, weight: .medium))
                     .foregroundStyle(Color.white)
             }

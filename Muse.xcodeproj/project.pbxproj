@@ -123,10 +123,13 @@
 		0858D46C2BD6D80D0082C64F /* AlbumDetailsTrackList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0858D3F72BD6D80D0082C64F /* AlbumDetailsTrackList.swift */; };
 		0858D46D2BD6D80D0082C64F /* AlbumDetailsInfoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0858D3F82BD6D80D0082C64F /* AlbumDetailsInfoView.swift */; };
 		0858D46E2BD6D80D0082C64F /* AlbumDetailsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0858D3FA2BD6D80D0082C64F /* AlbumDetailsView.swift */; };
+		652941E42CE066B3008439AB /* LyricsKit in Frameworks */ = {isa = PBXBuildFile; productRef = 652941E32CE066B3008439AB /* LyricsKit */; };
+		655BBA512CE1B3C5002BAC83 /* CustomSliderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 655BBA502CE1B3C5002BAC83 /* CustomSliderView.swift */; };
 		659125182CDFB1AC00B27011 /* MeshGradient in Frameworks */ = {isa = PBXBuildFile; productRef = 659125172CDFB1AC00B27011 /* MeshGradient */; };
 		6591251A2CDFB1AC00B27011 /* MeshGradientCHeaders in Frameworks */ = {isa = PBXBuildFile; productRef = 659125192CDFB1AC00B27011 /* MeshGradientCHeaders */; };
 		6591251D2CDFB32000B27011 /* DominantColors in Frameworks */ = {isa = PBXBuildFile; productRef = 6591251C2CDFB32000B27011 /* DominantColors */; };
 		6591251F2CDFB6A500B27011 /* PlaybarMeshGradient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6591251E2CDFB6A500B27011 /* PlaybarMeshGradient.swift */; };
+		659125262CE0452600B27011 /* MusicPlayerLyrics.swift in Sources */ = {isa = PBXBuildFile; fileRef = 659125252CE0452600B27011 /* MusicPlayerLyrics.swift */; };
 		65AA0E932CDE3AB5001D768F /* AirPlayBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65AA0E922CDE3AB5001D768F /* AirPlayBar.swift */; };
 /* End PBXBuildFile section */
 
@@ -249,7 +252,9 @@
 		0858D3F82BD6D80D0082C64F /* AlbumDetailsInfoView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AlbumDetailsInfoView.swift; sourceTree = "<group>"; };
 		0858D3FA2BD6D80D0082C64F /* AlbumDetailsView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AlbumDetailsView.swift; sourceTree = "<group>"; };
 		08B77F412B20F9D2004B6D8D /* Muse.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Muse.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		655BBA502CE1B3C5002BAC83 /* CustomSliderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomSliderView.swift; sourceTree = "<group>"; };
 		6591251E2CDFB6A500B27011 /* PlaybarMeshGradient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaybarMeshGradient.swift; sourceTree = "<group>"; };
+		659125252CE0452600B27011 /* MusicPlayerLyrics.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MusicPlayerLyrics.swift; sourceTree = "<group>"; };
 		65AA0E922CDE3AB5001D768F /* AirPlayBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AirPlayBar.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -259,6 +264,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				0856A4F92B4B2F3D0073ACE7 /* SDWebImageSwiftUI in Frameworks */,
+				652941E42CE066B3008439AB /* LyricsKit in Frameworks */,
 				6591251A2CDFB1AC00B27011 /* MeshGradientCHeaders in Frameworks */,
 				6591251D2CDFB32000B27011 /* DominantColors in Frameworks */,
 				659125182CDFB1AC00B27011 /* MeshGradient in Frameworks */,
@@ -407,6 +413,7 @@
 			children = (
 				0858D34F2BD6D80D0082C64F /* MusicPlayer.swift */,
 				0858D3502BD6D80D0082C64F /* MusicPlayerAudio.swift */,
+				659125252CE0452600B27011 /* MusicPlayerLyrics.swift */,
 			);
 			path = Player;
 			sourceTree = "<group>";
@@ -598,6 +605,7 @@
 			isa = PBXGroup;
 			children = (
 				0858D3872BD6D80D0082C64F /* Slider.swift */,
+				655BBA502CE1B3C5002BAC83 /* CustomSliderView.swift */,
 				0858D3882BD6D80D0082C64F /* SliderDimension.swift */,
 			);
 			path = Slider;
@@ -1119,6 +1127,7 @@
 				659125172CDFB1AC00B27011 /* MeshGradient */,
 				659125192CDFB1AC00B27011 /* MeshGradientCHeaders */,
 				6591251C2CDFB32000B27011 /* DominantColors */,
+				652941E32CE066B3008439AB /* LyricsKit */,
 			);
 			productName = Muse;
 			productReference = 08B77F412B20F9D2004B6D8D /* Muse.app */;
@@ -1141,17 +1150,19 @@
 			};
 			buildConfigurationList = 08B77F3C2B20F9D2004B6D8D /* Build configuration list for PBXProject "Muse" */;
 			compatibilityVersion = "Xcode 14.0";
-			developmentRegion = en;
+			developmentRegion = "zh-Hans";
 			hasScannedForEncodings = 0;
 			knownRegions = (
 				en,
 				Base,
+				"zh-Hans",
 			);
 			mainGroup = 08B77F382B20F9D2004B6D8D;
 			packageReferences = (
 				0856A4F72B4B2F3D0073ACE7 /* XCRemoteSwiftPackageReference "SDWebImageSwiftUI" */,
 				659125162CDFB1AC00B27011 /* XCLocalSwiftPackageReference "../未命名文件夹/MeshGradient-1.0.3" */,
 				6591251B2CDFB32000B27011 /* XCRemoteSwiftPackageReference "DominantColors" */,
+				652941E22CE066B3008439AB /* XCRemoteSwiftPackageReference "LyricsKit" */,
 			);
 			productRefGroup = 08B77F422B20F9D2004B6D8D /* Products */;
 			projectDirPath = "";
@@ -1185,6 +1196,7 @@
 				0858D4342BD6D80D0082C64F /* HoverableSystemButtonStyle.swift in Sources */,
 				0858D44F2BD6D80D0082C64F /* ChartPlaylistsSection.swift in Sources */,
 				0858D45C2BD6D80D0082C64F /* SearchResultsView.swift in Sources */,
+				659125262CE0452600B27011 /* MusicPlayerLyrics.swift in Sources */,
 				0858D4442BD6D80D0082C64F /* ContentView.swift in Sources */,
 				0858D40A2BD6D80D0082C64F /* MusicSubscriptionManager.swift in Sources */,
 				0858D44B2BD6D80D0082C64F /* HomeSectionProvider.swift in Sources */,
@@ -1229,6 +1241,7 @@
 				0858D4172BD6D80D0082C64F /* Router.swift in Sources */,
 				0858D4112BD6D80D0082C64F /* NetworkError.swift in Sources */,
 				0858D4322BD6D80D0082C64F /* AppTextFieldStyle.swift in Sources */,
+				655BBA512CE1B3C5002BAC83 /* CustomSliderView.swift in Sources */,
 				0858D46B2BD6D80D0082C64F /* ArtistDetailsView.swift in Sources */,
 				0858D4592BD6D80D0082C64F /* SearchResultsAlbumsSection.swift in Sources */,
 				0858D40C2BD6D80D0082C64F /* MusicPlayerAudio.swift in Sources */,
@@ -1523,6 +1536,14 @@
 				minimumVersion = 2.2.6;
 			};
 		};
+		652941E22CE066B3008439AB /* XCRemoteSwiftPackageReference "LyricsKit" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/ddddxxx/LyricsKit";
+			requirement = {
+				branch = master;
+				kind = branch;
+			};
+		};
 		6591251B2CDFB32000B27011 /* XCRemoteSwiftPackageReference "DominantColors" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/DenDmitriev/DominantColors?tab=readme-ov-file#features";
@@ -1538,6 +1559,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 0856A4F72B4B2F3D0073ACE7 /* XCRemoteSwiftPackageReference "SDWebImageSwiftUI" */;
 			productName = SDWebImageSwiftUI;
+		};
+		652941E32CE066B3008439AB /* LyricsKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 652941E22CE066B3008439AB /* XCRemoteSwiftPackageReference "LyricsKit" */;
+			productName = LyricsKit;
 		};
 		659125172CDFB1AC00B27011 /* MeshGradient */ = {
 			isa = XCSwiftPackageProductDependency;

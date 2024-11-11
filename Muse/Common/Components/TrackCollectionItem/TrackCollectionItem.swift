@@ -40,8 +40,14 @@ struct TrackCollectionItem: View {
     var body: some View {
         VStack(alignment: .leading, spacing: .s1) {
             ZStack(alignment: .bottomLeading) {
-                MusicArtworkImage(artwork: self.item.artwork, width: self.kind.size.width, height: self.kind.size.height)
-                    .zIndex(0)
+                MusicArtworkImage(
+                    artwork: self.item.artwork,
+                    width: self.kind.size.width,
+                    height: self.kind.size.height,
+                    imageWidth: self.kind.size.width,
+                    imageHeight:  self.kind.size.height
+                )
+                .zIndex(0)
                 
                 if self.isHovered {
                     Group {

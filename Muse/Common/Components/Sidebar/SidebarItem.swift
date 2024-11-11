@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import MusicKit
 
 enum SidebarItem: Hashable, Identifiable, CaseIterable {
     case home
@@ -57,4 +58,10 @@ enum SidebarItem: Hashable, Identifiable, CaseIterable {
         hasher.combine(self.title)
         hasher.combine(self.iconName)
     }
+}
+
+enum NavigationTarget: Hashable {
+    case artist(Artist)
+    case album(Album)
+    case playlist(Playlist)
 }

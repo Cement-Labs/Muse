@@ -45,12 +45,6 @@ extension Playbar {
             }
             return result
         }
-        
-        func mapLoudnessToPower(loudness: Float, minLoudness: Float = -160.0, maxLoudness: Float = 0.0, minPower: Float = 0.0, maxPower: Float = 10.0) -> Float {
-            let normalizedLoudness = max(min(loudness, maxLoudness), minLoudness)
-            let mappedPower = ((normalizedLoudness - minLoudness) / (maxLoudness - minLoudness)) * (maxPower - minPower) + minPower
-            return mappedPower
-        }
     }
     
     struct AdjustableBlurView: NSViewRepresentable {
@@ -61,6 +55,7 @@ extension Playbar {
             effectView.blendingMode = .withinWindow
             effectView.state = .active
             effectView.material = .hudWindow
+            effectView.appearance = NSAppearance(named: .darkAqua)
             return effectView
         }
 
@@ -106,7 +101,6 @@ extension Color {
         var blue: CGFloat = 0
         var alpha: CGFloat = 0
         
-        // 使用 NSColor 进行颜色解析
         nsColor.getRed(&red, green: &green, blue: &blue, alpha: &alpha)
         
         // 转换为 simd_float3

@@ -35,13 +35,18 @@ extension Playbar {
                     .font(.system(size: 10.0, weight: .medium))
                     .foregroundStyle(Color.primaryText)
                 
-                Slider(
-                    width: .constant(64.0),
-                    percentage: .init(
+                CustomSliderView(
+                    value: Binding(
                         get: { CGFloat(volume) },
-                        set: { self.musicPlayer.volume = Float($0) }
-                    )
+                        set: { newVolume in
+                            self.musicPlayer.volume = Float(newVolume)
+                        }
+                    ),
+                    range: 0...1,
+                    realTime: true
                 )
+                .frame(width: 64)
+                .animation(.smooth(), value: volume)
                 
                 Image(systemName: "speaker.wave.3.fill")
                     .font(.system(size: 10.0, weight: .medium))
@@ -78,13 +83,18 @@ extension Playbar {
                     .font(.system(size: 12.0, weight: .medium))
                     .foregroundStyle(Color.white)
                 
-                Slider(
-                    width: .constant(230),
-                    percentage: .init(
+                CustomSliderView(
+                    value: Binding(
                         get: { CGFloat(volume) },
-                        set: { self.musicPlayer.volume = Float($0) }
-                    )
+                        set: { newVolume in
+                            self.musicPlayer.volume = Float(newVolume)
+                        }
+                    ),
+                    range: 0...1,
+                    realTime: true
                 )
+                .frame(width: 230)
+                .animation(.smooth(), value: volume)
                 
                 Image(systemName: "speaker.wave.3.fill")
                     .font(.system(size: 12.0, weight: .medium))

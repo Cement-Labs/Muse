@@ -27,8 +27,10 @@ struct Playbar: View {
     var body: some View {
         ZStack {
             if showPlayView {
-                backMeshGradient(dominantColors: dominantColors)
-                AdjustableBlurView(blurRadius: ishowLy ? 0 : 20)
+                Group {
+                    backMeshGradient(dominantColors: dominantColors)
+                    AdjustableBlurView(blurRadius: ishowLy ? 0 : 50)
+                }
             }
             HStack(alignment: .center, spacing: 10) {
                 VStack(spacing: 20.0) {
@@ -38,6 +40,8 @@ struct Playbar: View {
                                 artwork: currentSong.artwork,
                                 width: showPlayView ? (self.musicPlayer.playbackState == .playing ? 300 : 250) : 36.0,
                                 height: showPlayView ? (self.musicPlayer.playbackState == .playing ? 300 : 250) : 36.0,
+                                imageWidth: 300,
+                                imageHeight: 300,
                                 dominantColors: Binding($dominantColors)
                             )
                             .border(style: .quinaryFill, cornerRadius: 8.0)
@@ -95,14 +99,16 @@ struct Playbar: View {
                         .font(.system(size: 18.0))
                         .foregroundStyle(showPlayView ? Color.white : Color.secondaryText)
                         .tappable {
-                            ishowLy.toggle()
+                            withAnimation(.smooth(duration: 0.75)) {
+                                ishowLy.toggle()
+                            }
                         }
                 }
                 .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: showPlayView ? .bottomLeading : .leading)
                 .padding([.bottom, .horizontal], showPlayView ? 16 : 0)
             }
             
-            HStack(spacing: 18)  {
+            HStack(spacing: .s2)  {
                 if !showPlayView {
                     VolumeControls()
                         .matchedGeometryEffect(id: "VolumeControls", in: animation)
@@ -151,5 +157,3 @@ struct Playbar_Preview: PreviewProvider {
         .frame(minWidth: 1080.0, minHeight: 600.0)
     }
 }
-
-

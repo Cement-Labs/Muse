@@ -14,7 +14,13 @@ struct PlainSongItemStyle: SongItemStyle {
             HStack {
                 HStack(spacing: 12.0) {
                     ZStack {
-                        MusicArtworkImage(artwork: song.artwork, width: 40.0, height: 40.0)
+                        MusicArtworkImage(
+                            artwork: song.artwork,
+                            width: 40.0,
+                            height: 40.0,
+                            imageWidth: 40,
+                            imageHeight: 40
+                        )
                         
                         Group {
                             if context.isHovered {

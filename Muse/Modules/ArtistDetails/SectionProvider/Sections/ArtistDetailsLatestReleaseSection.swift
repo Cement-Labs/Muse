@@ -19,7 +19,13 @@ extension ArtistDetailsSectionProvider {
                 HStack {
                     NavigationLink(value: value) {
                         HStack(spacing: 16.0) {
-                            MusicArtworkImage(artwork: value.artwork, width: 80.0, height: 80.0)
+                            MusicArtworkImage(
+                                artwork: value.artwork,
+                                width: 80.0,
+                                height: 80.0,
+                                imageWidth: 80.0,
+                                imageHeight: 80.0
+                            )
                                 .clipShape(.rect(cornerRadius: 8.0))
                             
                             VStack(alignment: .leading, spacing: 4.0) {

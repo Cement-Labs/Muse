@@ -19,8 +19,14 @@ extension SearchResultsSectionProvider {
             
             var body: some View {
                 VStack(spacing: 12.0) {
-                    MusicArtworkImage(artwork: self.artist.artwork, width: 80.0, height: 80.0)
-                        .clipShape(.rect(cornerRadius: 8.0))
+                    MusicArtworkImage(
+                        artwork: self.artist.artwork,
+                        width: 80.0,
+                        height: 80.0,
+                        imageWidth: 80.0,
+                        imageHeight: 80.0
+                    )
+                    .clipShape(.rect(cornerRadius: 8.0))
                     
                     Text(self.artist.name)
                         .lineLimit(1)

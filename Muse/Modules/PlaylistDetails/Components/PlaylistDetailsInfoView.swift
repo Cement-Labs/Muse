@@ -22,16 +22,22 @@ extension PlaylistDetailsView {
         
         var body: some View {
             HStack(alignment: .bottom, spacing: 24.0) {
-                MusicArtworkImage(artwork: self.playlist.artwork, width: 256.0, height: 256.0)
-                    .frame(width: 256.0, height: 256.0)
-                    .clipShape(.rect(cornerRadius: 12.0))
-                    .glow(
-                        using: .init(
-                            color: Color(cgColor: self.playlist.artwork?.backgroundColor ?? .black),
-                            radius: 16.0,
-                            duration: 8.0
-                        )
+                MusicArtworkImage(
+                    artwork: self.playlist.artwork,
+                    width: 256.0,
+                    height: 256.0,
+                    imageWidth: 256.0,
+                    imageHeight: 256.0
+                )
+                .frame(width: 256.0, height: 256.0)
+                .clipShape(.rect(cornerRadius: 12.0))
+                .glow(
+                    using: .init(
+                        color: Color(cgColor: self.playlist.artwork?.backgroundColor ?? .black),
+                        radius: 16.0,
+                        duration: 8.0
                     )
+                )
                 
                 VStack(alignment: .leading, spacing: 64.0) {
                     self.info

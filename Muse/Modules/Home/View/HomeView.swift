@@ -38,20 +38,21 @@ struct HomeView: View {
                             self.content(content)
                         }
                     }
-                    .transition(.opacity)
                 }
                 .padding(.all, 24.0)
-                .animation(.easeIn, value: self.value.status)
             }
             .scrollDisabled(!self.value.status.isLoaded)
             .navigationDestination(for: Artist.self) { artist in
                 ArtistDetailsView(artist: artist)
+                    .id(artist.id)
             }
             .navigationDestination(for: Album.self) { album in
                 AlbumDetailsView(album: album)
+                    .id(album.id)
             }
             .navigationDestination(for: Playlist.self) { playlist in
                 PlaylistDetailsView(playlist: playlist)
+                    .id(playlist.id)
             }
         }
         .onAppear(perform: self.loadValue)

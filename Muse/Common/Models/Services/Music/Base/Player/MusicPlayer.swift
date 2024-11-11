@@ -8,6 +8,7 @@
 import Foundation
 import Combine
 import MusicKit
+import LyricsService
 import AVFoundation
 
 @MainActor
@@ -52,6 +53,7 @@ final class MusicPlayer: ObservableObject {
     @Published var queue: [Song] = []
     @Published var playbackTime: TimeInterval = 0.0
     @Published var deviceIDMapping: [String: AudioDeviceID] = [:]
+    @Published var lyricsDir = "/"+NSHomeDirectory().split(separator: "/")[0 ... 1].joined(separator: "/")+"/Music/Muse/Lyrics" // ~/Music
     
     @Published var currentSong: Song? = nil {
         didSet {
@@ -106,6 +108,9 @@ final class MusicPlayer: ObservableObject {
             return self.manager.subscription.offer()
         }
         
+        // 下载歌词
+        await downloadLyricsIfNeeded(for: self.player.queue.currentEntry?.item)
+        
         if let shuffleMode = shuffleMode {
             self.shuffleMode = shuffleMode
         }
@@ -120,16 +125,19 @@ final class MusicPlayer: ObservableObject {
     
     func play(item: PlayableMusicItem, shuffleMode: ShuffleMode? = nil) async {
         self.player.queue = [item]
+        await downloadLyricsIfNeeded(for: item)
         await self.play(shuffleMode: shuffleMode)
     }
     
     func play(song: Song) async {
         self.player.queue = [song]
+        await downloadLyricsIfNeeded(for: song)
         await self.play()
     }
     
     func play(songs: [Song], shuffleMode: ShuffleMode? = nil) async {
         self.player.queue = .init(for: songs)
+        await downloadLyricsIfNeeded(for: songs.first)
         await self.play(shuffleMode: shuffleMode)
     }
     
@@ -168,6 +176,36 @@ final class MusicPlayer: ObservableObject {
         self.player.queue.entries.removeAll { entry in
             guard case .song(let item) = entry.item else { return false }
             return item.id == song.id
+        }
+    }
+    
+    private func downloadLyricsIfNeeded(for song: PlayableMusicItem?) async {
+        guard let song = song as? Song else {
+            print("返回了")
+            return
+        }
+        
+        let lyricsFileName = "\(lyricsDir)/\(song.title) - \(song.artistName).lrcx"
+        let fileURL = URL(fileURLWithPath: lyricsFileName)
+        
+        if !fileExists(atPath: lyricsFileName) {
+            print("下载歌词: \(lyricsFileName)")
+            
+            let docs = downloadLyrics(song: song.title, artist: song.artistName, timeout: 225.2)
+            
+            if docs.count > 0 {
+                let myData = docs[0].description
+                
+                persist(myData, to: fileURL)
+                print("数据已成功写入文件")
+            }
+            
+            let str = try? ReadFile(named: lyricsFileName)
+            if let lrcx = str {
+                print("\(lrcx)")
+            } else {
+                print("\(song.title) - \(song.artistName).lrcx 歌词文件不存在")
+            }
         }
     }
     

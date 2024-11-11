@@ -14,26 +14,32 @@ struct MusicArtworkImage: View {
     private let artwork: Artwork?
     private let width: CGFloat
     private let height: CGFloat
+    private let imageWidth: CGFloat
+    private let imageHeight: CGFloat
     
     @State private var nsImage: NSImage? = nil
     @State private var isLoading = false
     @Binding var dominantColors: [Color]?
     
-    init(artwork: Artwork?, width: CGFloat, height: CGFloat, dominantColors: Binding<[Color]?> = .constant(nil)) {
+    init(artwork: Artwork?, width: CGFloat, height: CGFloat, imageWidth: CGFloat, imageHeight: CGFloat, dominantColors: Binding<[Color]?> = .constant(nil)) {
         self.artwork = artwork
         self.width = width
         self.height = height
+        self.imageWidth = imageWidth
+        self.imageHeight = imageHeight
         self._dominantColors = dominantColors
     }
     
     var body: some View {
-        if let artwork = self.artwork, let url = artwork.url(width: 128, height: 128) {
+        if let artwork = self.artwork, let url = artwork.url(width: Int(self.imageWidth), height: Int(self.imageWidth)) {
             if let nsImage = nsImage {
                 Image(nsImage: nsImage)
                     .resizable()
                     .frame(width: self.width, height: self.height)
                     .onAppear {
-                        extractDominantColors(from: nsImage)
+                        if dominantColors != nil {
+                            extractDominantColors(from: nsImage)
+                        }
                     }
                     .onChange(of: url) { oldValue, newValue in
                         self.nsImage = nil

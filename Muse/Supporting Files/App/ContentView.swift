@@ -20,9 +20,6 @@ struct ContentView: View {
     
     @State private var showPlayView = false
     
-
-    
-    
     var body: some View {
         GeometryReader { geometry in
             ZStack {

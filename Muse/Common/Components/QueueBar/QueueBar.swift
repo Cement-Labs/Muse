@@ -74,7 +74,13 @@ extension QueueBar {
             HStack {
                 HStack(spacing: 12.0) {
                     ZStack {
-                        MusicArtworkImage(artwork: self.song.artwork, width: 40.0, height: 40.0)
+                        MusicArtworkImage(
+                            artwork: self.song.artwork,
+                            width: 40.0,
+                            height: 40.0,
+                            imageWidth: 40.0,
+                            imageHeight: 40.0
+                        )
                         
                         if self.isHovered {
                             Color.black
@@ -126,7 +132,7 @@ extension QueueBar {
             .onHover { hovering in
                 self.isHovered = hovering
             }
-            .onTapGesture {
+            .tappable {
                 Task {
                     await self.musicPlayer.skip(to: self.song)
                 }
