@@ -47,12 +47,16 @@ struct SongItem<S: SongItemStyle>: View {
         }
         .onTapGesture {
             Task {
+                //Debug: Try switching to AVPlayer for playback.
                 if self.isCurrentlyPlaying {
                     self.musicPlayer.pause()
+                    // self.musicPlayer.avPause()
                 } else if self.isCurrent {
                     await self.musicPlayer.play()
+                    // self.musicPlayer.avPlay()
                 } else {
-                    await self.musicPlayer.play(item: self.song)
+                    await self.musicPlayer.play(item: self.song) 
+                    // self.musicPlayer.avPlay(song: self.song)
                 }
             }
         }

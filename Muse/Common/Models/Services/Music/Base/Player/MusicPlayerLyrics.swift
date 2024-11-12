@@ -10,6 +10,38 @@ import Foundation
 
 extension MusicPlayer {
     
+    // Test Only
+    /*
+    private func downloadLyricsIfNeeded(for song: PlayableMusicItem?) async {
+        guard let song = song as? Song else {
+            print("Returned")
+            return
+        }
+        
+        let lyricsFileName = "\(lyricsDir)/\(song.title) - \(song.artistName).lrcx"
+        let fileURL = URL(fileURLWithPath: lyricsFileName)
+        
+        if !fileExists(atPath: lyricsFileName) {
+            print("Download lyrics: \(lyricsFileName)")
+            
+            let docs = downloadLyrics(song: song.title, artist: song.artistName, timeout: 225.2)
+            
+            if docs.count > 0 {
+                let myData = docs[0].description
+                
+                persist(myData, to: fileURL)
+                print("Data has been successfully written to the file.")
+            }
+            
+            let str = try? ReadFile(named: lyricsFileName)
+            if let lrcx = str {
+                print("\(lrcx)")
+            } else {
+                print("\(song.title) - \(song.artistName).lrcx The lyrics file does not exist.")
+            }
+        }
+    }
+    
     func fileExists(atPath path: String) -> Bool {
         let fileManager = FileManager.default
         if let attributes = try? fileManager.attributesOfItem(atPath: path) {
@@ -74,4 +106,5 @@ extension MusicPlayer {
         }
         return data
     }
+    */
 }

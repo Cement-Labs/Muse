@@ -8,6 +8,7 @@
 import Foundation
 import Combine
 import MusicKit
+import MusadoraKit
 import LyricsService
 import AVFoundation
 
@@ -38,6 +39,14 @@ final class MusicPlayer: ObservableObject {
         }
     }
     
+    // Using AvPlayer can solve some problems. For example, it can obtain audio information to achieve audio visualization.
+    /*
+    private var avPlayer: AVPlayer
+    private var playerItem: AVPlayerItem?
+    private var audioProcessingTap: MTAudioProcessingTap?
+    private var playerShouldNextObserver: NSObjectProtocol?
+    */
+    
     private let manager: MusicManager = .shared
     private let player: ApplicationMusicPlayer = .shared
     private let audio: Audio = .init()
@@ -50,10 +59,18 @@ final class MusicPlayer: ObservableObject {
     private var playerStateCancellable: AnyCancellable?
     private var playerQueueCancellable: AnyCancellable?
     
+    // This part is used to try playing with AVPlayer.
+    /*
+    @Published var isPaused = false
+    @Published var currentSongID: String?
+    @Published var content = [(Track, URL)]()
+    @Published var currentTrackIndex: Int = 0
+     */
+    
     @Published var queue: [Song] = []
     @Published var playbackTime: TimeInterval = 0.0
     @Published var deviceIDMapping: [String: AudioDeviceID] = [:]
-    @Published var lyricsDir = "/"+NSHomeDirectory().split(separator: "/")[0 ... 1].joined(separator: "/")+"/Music/Muse/Lyrics" // ~/Music
+    // @Published var lyricsDir = "/"+NSHomeDirectory().split(separator: "/")[0 ... 1].joined(separator: "/")+"/Music/Muse/Lyrics" // ~/Music
     
     @Published var currentSong: Song? = nil {
         didSet {
@@ -86,6 +103,8 @@ final class MusicPlayer: ObservableObject {
     }
     
     init() {
+        // self.avPlayer = AVPlayer()
+        
         self.volumeCancellable = self.audio.volume
             .receive(on: DispatchQueue.main)
             .assign(to: \.volume, on: self)
@@ -103,13 +122,141 @@ final class MusicPlayer: ObservableObject {
             }
     }
     
+    // MARK: - AVPlayer Test
+    /*
+    func togglePlayback() {
+        switch avPlayer.timeControlStatus {
+            case .paused:
+                self.avPlay()
+                self.isPaused = false
+                self.playbackState = .paused
+            
+            case .waitingToPlayAtSpecifiedRate:
+                self.playbackState = .loading
+            
+            case .playing:
+                self.avPause()
+                self.isPaused = true
+                self.playbackState = .playing
+            
+            @unknown default:
+                break
+        }
+    }
+    
+    private func getTrackListing(from playlist: Playlist) async -> Tracks? {
+        let detailedPlaylist = try? await playlist.with(.tracks)
+        if let tracks = detailedPlaylist?.tracks {
+            return tracks
+        }
+        return nil
+    }
+    
+    func avPlay(song: Song) {
+        let url = song.previewAssets?.first?.url
+        
+        avPlayer.replaceCurrentItem(with: nil)
+        let playerItem = AVPlayerItem(url: url ?? URL(fileURLWithPath: Bundle.main.path(forResource: "SpaceWalker", ofType: "m4a")!))
+        
+        self.avPlay(playerItem: playerItem)
+        self.playbackState = .playing
+    }
+    
+    func avPlay(songs: [Song], shuffleMode: ShuffleMode? = nil) async {
+        self.queue = songs
+        if let firstSong = songs.first, let url = firstSong.previewAssets?.first?.url {
+            let playerItem = AVPlayerItem(url: url)
+            self.avPlay(playerItem: playerItem)
+        }
+        
+       self.avPlay(shuffleMode: shuffleMode)
+    }
+    
+    //TODO: Find a way to play PlayableMusicItem using AVPlayer.
+    /*
+    func avPlay(item: PlayableMusicItem, shuffleMode: ShuffleMode? = nil) async {
+        if let url = item.previewAssets?.first?.url {
+            let playerItem = AVPlayerItem(url: url)
+            self.avPlay(playerItem: playerItem, shuffleMode: shuffleMode)
+        }
+    }
+    */
+    
+    func avPlay(playerItem: AVPlayerItem, shuffleMode: ShuffleMode? = nil) {
+        if let shuffleMode = shuffleMode {
+            self.shuffleMode = shuffleMode
+        }
+        self.addAudioProcessingTap(to: playerItem)
+        self.avPlayer.replaceCurrentItem(with: playerItem)
+        self.avPlayer.play()
+    }
+    
+    func avPlay(shuffleMode: ShuffleMode? = nil) {
+        if let shuffleMode = shuffleMode {
+            self.shuffleMode = shuffleMode
+        }
+        self.avPlay()
+        self.playbackState = .playing
+    }
+    
+    func avPlay(playerItem: AVPlayerItem) {
+        self.addAudioProcessingTap(to: playerItem)
+        self.avPlayer.replaceCurrentItem(with: playerItem)
+        self.avPlayer.play()
+    }
+    
+    func avPlay() {
+        self.avPlayer.play()
+    }
+    
+    func avPause() {
+        self.avPlayer.pause()
+    }
+    
+    // Method for obtaining audio information of AVPlayer.
+    private func addAudioProcessingTap(to playerItem: AVPlayerItem) {
+        guard let audioTrack = playerItem.asset.tracks(withMediaType: .audio).first else {
+            print("Audio track not found")
+            return
+        }
+        
+        var callbacks = MTAudioProcessingTapCallbacks(
+            //Only global objC callbacks can be used.
+            version: kMTAudioProcessingTapCallbacksVersion_0,
+            clientInfo: nil,
+            init: tapInitCallback,
+            finalize: tapFinalizeCallback,
+            prepare: tapPrepareCallback,
+            unprepare: tapUnprepareCallback,
+            process: tapProcessCallback
+        )
+        
+        var audioProcessingTap: Unmanaged<MTAudioProcessingTap>?
+        let status = MTAudioProcessingTapCreate(kCFAllocatorDefault, &callbacks, kMTAudioProcessingTapCreationFlag_PostEffects, &audioProcessingTap)
+        
+        if status == noErr, let tap = audioProcessingTap {
+            let audioParams = AVMutableAudioMixInputParameters(track: audioTrack)
+            audioParams.audioTapProcessor = tap.takeUnretainedValue()
+            
+            let audioMix = AVMutableAudioMix()
+            audioMix.inputParameters = [audioParams]
+            playerItem.audioMix = audioMix
+        } else {
+            print("Failed to create MTAudioProcessingTap")
+        }
+    }
+    */
+    // MARK: - TestED
+    
     func play(shuffleMode: ShuffleMode? = nil) async {
         guard !self.manager.subscription.canOffer else {
             return self.manager.subscription.offer()
         }
         
-        // 下载歌词
-        await downloadLyricsIfNeeded(for: self.player.queue.currentEntry?.item)
+        // Only testing.
+        /*
+        await downloadLyricsIfNeeded(for: song)
+        */
         
         if let shuffleMode = shuffleMode {
             self.shuffleMode = shuffleMode
@@ -123,21 +270,32 @@ final class MusicPlayer: ObservableObject {
         self.playbackState = .playing
     }
     
+    // Search it, if need Change
     func play(item: PlayableMusicItem, shuffleMode: ShuffleMode? = nil) async {
         self.player.queue = [item]
-        await downloadLyricsIfNeeded(for: item)
+        // Only testing.
+        /*
+        await downloadLyricsIfNeeded(for: song)
+        */
         await self.play(shuffleMode: shuffleMode)
     }
     
+    // Search it, if need Change
     func play(song: Song) async {
         self.player.queue = [song]
+        // Only testing.
+        /*
         await downloadLyricsIfNeeded(for: song)
+        */
         await self.play()
     }
     
     func play(songs: [Song], shuffleMode: ShuffleMode? = nil) async {
         self.player.queue = .init(for: songs)
-        await downloadLyricsIfNeeded(for: songs.first)
+        // Only testing.
+        /*
+        await downloadLyricsIfNeeded(for: song)
+        */
         await self.play(shuffleMode: shuffleMode)
     }
     
@@ -176,36 +334,6 @@ final class MusicPlayer: ObservableObject {
         self.player.queue.entries.removeAll { entry in
             guard case .song(let item) = entry.item else { return false }
             return item.id == song.id
-        }
-    }
-    
-    private func downloadLyricsIfNeeded(for song: PlayableMusicItem?) async {
-        guard let song = song as? Song else {
-            print("返回了")
-            return
-        }
-        
-        let lyricsFileName = "\(lyricsDir)/\(song.title) - \(song.artistName).lrcx"
-        let fileURL = URL(fileURLWithPath: lyricsFileName)
-        
-        if !fileExists(atPath: lyricsFileName) {
-            print("下载歌词: \(lyricsFileName)")
-            
-            let docs = downloadLyrics(song: song.title, artist: song.artistName, timeout: 225.2)
-            
-            if docs.count > 0 {
-                let myData = docs[0].description
-                
-                persist(myData, to: fileURL)
-                print("数据已成功写入文件")
-            }
-            
-            let str = try? ReadFile(named: lyricsFileName)
-            if let lrcx = str {
-                print("\(lrcx)")
-            } else {
-                print("\(song.title) - \(song.artistName).lrcx 歌词文件不存在")
-            }
         }
     }
     
@@ -403,3 +531,76 @@ extension MusicKit.MusicPlayer.State: @retroactive Equatable {
     }
 }
 
+// MARK: - AVPlayer CalculatePower Extension
+/*
+var powerLevel: Float = -160
+
+// The callback function must be a global C function.
+func tapInitCallback(
+    tap: MTAudioProcessingTap,
+    clientInfo: UnsafeMutableRawPointer?,
+    tapStorageOut: UnsafeMutablePointer<UnsafeMutableRawPointer?>
+) {
+    print("Tap Initialized")
+}
+
+func tapFinalizeCallback(tap: MTAudioProcessingTap) {
+    print("Tap Finalized")
+}
+
+func tapPrepareCallback(
+    tap: MTAudioProcessingTap,
+    maxFrames: CMItemCount,
+    processingFormat: UnsafePointer<AudioStreamBasicDescription>
+) {
+    print("Tap Prepared")
+}
+
+func tapUnprepareCallback(tap: MTAudioProcessingTap) {
+    print("Tap Unprepared")
+}
+
+func tapProcessCallback(
+    tap: MTAudioProcessingTap,
+    numberFrames: CMItemCount,
+    flags: MTAudioProcessingTapFlags,
+    bufferListInOut: UnsafeMutablePointer<AudioBufferList>,
+    frameCountOut: UnsafeMutablePointer<CMItemCount>,
+    flagsOut: UnsafeMutablePointer<MTAudioProcessingTapFlags>
+) {
+    // Obtain audio samples
+    let status = MTAudioProcessingTapGetSourceAudio(tap, numberFrames, bufferListInOut, flagsOut, nil, frameCountOut)
+    
+    if status != noErr {
+        print("Error getting source audio: \(status)")
+        return
+    }
+
+    // Directly access the mutable AudioBufferList through bufferListInOut.
+    let audioBufferList = bufferListInOut.pointee
+    let buffers = UnsafeBufferPointer(start: &bufferListInOut.pointee.mBuffers, count: Int(audioBufferList.mNumberBuffers))
+
+    for buffer in buffers {
+        let frameLength = Int(frameCountOut.pointee)
+        guard let audioData = buffer.mData?.assumingMemoryBound(to: Float.self) else {
+            continue
+        }
+        
+        let power = calculatePower(from: audioData, frameLength: frameLength)
+        powerLevel = power
+    }
+}
+
+// Auxiliary function for calculating power
+func calculatePower(from audioData: UnsafePointer<Float>, frameLength: Int) -> Float {
+    var totalPower: Float = 0
+    for i in 0..<frameLength {
+        totalPower += audioData[i] * audioData[i]
+    }
+    
+    let averagePower = totalPower / Float(frameLength)
+    let powerInDb = 10 * log10(averagePower)
+    
+    return powerInDb
+}
+*/

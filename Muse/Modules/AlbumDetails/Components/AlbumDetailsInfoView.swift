@@ -40,7 +40,6 @@ extension AlbumDetailsView {
                                 duration: 8.0
                             )
                         )
-                    
                     self.info
                 }
                 

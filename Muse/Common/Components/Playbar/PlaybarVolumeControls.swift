@@ -78,27 +78,23 @@ extension Playbar {
         }
         
         private func slider(volume: Float) -> some View {
-            HStack(spacing: 8.0) {
-                Image(systemName: "speaker.fill")
-                    .font(.system(size: 12.0, weight: .medium))
-                    .foregroundStyle(Color.white)
-                
-                CustomSliderView(
+            HStack(spacing: .zero) {
+                VolumeSlider(
                     value: Binding(
                         get: { CGFloat(volume) },
                         set: { newVolume in
                             self.musicPlayer.volume = Float(newVolume)
                         }
                     ),
-                    range: 0...1,
-                    realTime: true
-                )
-                .frame(width: 230)
-                .animation(.smooth(), value: volume)
-                
-                Image(systemName: "speaker.wave.3.fill")
-                    .font(.system(size: 12.0, weight: .medium))
-                    .foregroundStyle(Color.white)
+                    inRange: 0...1,
+                    activeFillColor: Color.white,
+                    fillColor: Color.white.opacity(0.5),
+                    emptyColor: Color.white.opacity(0.3),
+                    height: 8
+                ) { started in
+                    
+                }
+                .frame(width: 300, height: 30)
             }
         }
     }

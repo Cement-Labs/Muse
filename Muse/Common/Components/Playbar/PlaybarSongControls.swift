@@ -228,21 +228,8 @@ extension Playbar {
         }
         
         private var slider: some View {
-            HStack(spacing: 8.0) {
-                Group {
-                    if let duration = self.musicPlayer.currentSong?.duration {
-                        Text((self.playbackTimePercentage * duration).minutesAndSeconds)
-                            .font(.system(size: 10.0))
-                            .foregroundStyle(Color.white)
-                            .contentTransition(.numericText(value: duration))
-                            .animation(.spring(), value: duration)
-                    } else {
-                        Color.clear
-                    }
-                }
-                .frame(width: 24.0, height: 12.0)
-                
-                CustomSliderView(
+            HStack(spacing: .zero) {
+                MusicProgressSlider(
                     value: Binding(
                         get: { playbackTimePercentage * (self.musicPlayer.currentSong?.duration ?? 0) },
                         set: { requestedTime in
@@ -250,38 +237,27 @@ extension Playbar {
                             playbackTimePercentage = requestedTime / duration
                         }
                     ),
-                    range: 0...(self.musicPlayer.currentSong?.duration ?? 1),
-                    realTime: false,
-                    onEditingChanged: { isEditing in
-                        if isEditing {
-                            self.musicPlayer.pause()
-                        } else {
-                            if let duration = self.musicPlayer.currentSong?.duration {
-                                self.musicPlayer.seek(to: playbackTimePercentage * duration)
-                            }
-                            Task {
-                                await self.musicPlayer.play()
-                            }
+                    current: (self.playbackTimePercentage * (self.musicPlayer.currentSong?.duration ?? 0)).minutesAndSeconds,
+                    duration: self.musicPlayer.currentSong?.duration?.minutesAndSeconds ?? "-0:00",
+                    inRange: 0...(self.musicPlayer.currentSong?.duration ?? 1),
+                    activeFillColor: Color.white,
+                    fillColor: Color.white.opacity(0.5),
+                    emptyColor: Color.white.opacity(0.3),
+                    height: 32
+                ) { isEditing in
+                    if isEditing {
+                        if let duration = self.musicPlayer.currentSong?.duration {
+                            self.musicPlayer.seek(to: playbackTimePercentage * duration)
                         }
-                    }
-                )
-                .frame(width: 230)
-                .animation(.smooth(), value: self.musicPlayer.currentSong?.duration)
-                
-                Group {
-                    if let duration = self.musicPlayer.currentSong?.duration {
-                        Text(duration.minutesAndSeconds)
-                            .font(.system(size: 10.0))
-                            .foregroundStyle(Color.white)
-                            .contentTransition(.numericText(value: duration))
-                            .animation(.spring(), value: duration)
+                        Task {
+                            await self.musicPlayer.play()
+                        }
                     } else {
-                        Color.clear
+                        self.musicPlayer.pause()
                     }
                 }
-                .frame(width: 24.0, height: 12.0)
             }
-            .frame(width: 300,height: 12.0, alignment: .center)
+            .frame(width: 300, height: 40, alignment: .center)
             .animation(.easeIn(duration: 0.2), value: self.isSliderHovered)
         }
     }
